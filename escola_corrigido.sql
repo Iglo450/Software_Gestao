@@ -91,7 +91,9 @@ CREATE TABLE mensalidade (
   valor DECIMAL(10,2),
   mes_referencia DATE,
   status ENUM('Ativo','Inativo','Cancelado','Nao_pago'),
-  PRIMARY KEY (matricula, cpf)
+  PRIMARY KEY (valor,mes_referencia),
+  FOREIGN KEY (cpf) REFERENCES aluno (cpf),
+  FOREIGN KEY (matricula) REFERENCES matricula (matricula)
 );
 
 CREATE TABLE nota (
