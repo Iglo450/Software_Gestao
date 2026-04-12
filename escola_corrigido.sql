@@ -2,7 +2,7 @@ CREATE DATABASE projeto_db_escola;
 USE projeto_db_escola;
 
 CREATE TABLE pessoa (
-  cpf CHAR(11) PRIMARY KEY,
+  cpf CHAR(11) PRIMARY KEY UNIQUE,
   primeiro_nome VARCHAR(15),
   sobrenome VARCHAR(38),
   data_nasc DATE,
@@ -61,18 +61,18 @@ CREATE TABLE professor_disciplina (
 CREATE TABLE aluno (
   cpf CHAR(11) NOT NULL,
   matricula INT NOT NULL,
-  PRIMARY KEY (cpf, matricula),
-  FOREIGN KEY (cpf) REFERENCES pessoa (cpf)
+  PRIMARY KEY (matricula),
+  FOREIGN KEY (cpf) REFERENCES pessoa (cpf),
+  FOREIGN KEY (matricula) REFERENCES matricula (matricula)
 );
 
 CREATE TABLE matricula (
-  matricula INT  NOT NULL,
-  id_disciplina INT  NOT NULL,
-  cpf CHAR(11) NOT NULL,
+  matricula INT NOT NULL,
+  id_disciplina INT NOT NULL,
   data_inicio DATE,
   data_fim DATE,
   status ENUM('Ativo','Inativo','Cancelado'),
-  PRIMARY KEY (matricula, id_disciplina, cpf),
+  PRIMARY KEY (matricula, id_disciplina),
   FOREIGN KEY (id_disciplina) REFERENCES disciplina (id_disciplina)
 );
 
@@ -91,7 +91,7 @@ CREATE TABLE mensalidade (
   valor DECIMAL(10,2),
   mes_referencia DATE,
   status ENUM('Ativo','Inativo','Cancelado','Nao_pago'),
-  PRIMARY KEY (valor,mes_referencia),
+  PRIMARY KEY (mes_referencia, matricula),
   FOREIGN KEY (cpf) REFERENCES aluno (cpf),
   FOREIGN KEY (matricula) REFERENCES matricula (matricula)
 );
@@ -103,7 +103,8 @@ CREATE TABLE nota (
   nota DECIMAL(4,2) NOT NULL,
   data_avaliacao DATE,
   PRIMARY KEY (matricula, id_disciplina, tipo),
-  FOREIGN KEY (id_disciplina) REFERENCES disciplina (id_disciplina)
+  FOREIGN KEY (id_disciplina) REFERENCES disciplina (id_disciplina),
+  FOREIGN KEY (matricula) REFERENCES matricula (matricula)
 );
 
 CREATE TABLE falta (
@@ -112,7 +113,8 @@ CREATE TABLE falta (
   id_disciplina INT,
   data_falta DATE NOT NULL,
   justificada ENUM('Sim','Nao') DEFAULT 'Nao',
-  FOREIGN KEY (id_disciplina) REFERENCES disciplina (id_disciplina)
+  FOREIGN KEY (id_disciplina) REFERENCES disciplina (id_disciplina),
+  FOREIGN KEY (matricula) REFERENCES matricula(matricula)
 );
 
 CREATE TABLE ponto (
