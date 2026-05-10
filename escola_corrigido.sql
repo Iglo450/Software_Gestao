@@ -420,18 +420,6 @@ SELECT 'OLTP' AS Origem, SUM(valor) AS Total FROM tb_mensalidade
 UNION ALL
 SELECT 'OLAP' AS Origem, SUM(valor_total) FROM fato_mensalidades;
 
--- VISÃO EXECUTIVA DE BI: Receitas vs Despesas 
-SELECT 
-    dt.nome_mes AS Mes,
-    COALESCE(SUM(fm.valor_total), 0) AS Total_Receitas,
-    COALESCE(SUM(fdf.salario_pago), 0) AS Total_Despesas,
-    (COALESCE(SUM(fm.valor_total), 0) - COALESCE(SUM(fdf.salario_pago), 0)) AS Saldo_Caixa
-FROM dim_tempo dt
-LEFT JOIN fato_mensalidades fm ON dt.sk_tempo = fm.sk_tempo
-LEFT JOIN fato_despesas_folha fdf ON dt.sk_tempo = fdf.sk_tempo
-GROUP BY dt.sk_tempo, dt.nome_mes 
-ORDER BY dt.sk_tempo;
-
 -- FASE 5: DESEMPENHO E OTIMIZAÇÃO (ÍNDICES E EXPLAIN)
  
 -- Criação de Índices em colunas frequentemente usadas em WHERE e JOINs
